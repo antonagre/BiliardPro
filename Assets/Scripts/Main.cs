@@ -12,7 +12,7 @@ public class Main : MonoBehaviour
 
     void Update(){
         if (mgr.tiroCompleto && !mgr.checkBallsMoving()) {
-            if (mgr.inBuca) {
+            if (mgr.checkFirstHit() && mgr.inBuca) {
                 mgr.continuaTurno();
             }else {
                 mgr.cambiaTurno();

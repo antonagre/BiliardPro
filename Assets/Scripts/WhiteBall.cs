@@ -1,29 +1,45 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WhiteBall : Ball
 {
-    protected Rigidbody body;
-    public float multiplier=1f;
-    private Vector3 startPos;
+    public float multiplier = 1f;
+    private StdBall firstHit;
+
     void Start()
     {
-        startPos = transform.position;
-        body = GetComponent<Rigidbody>();
+        init();
     }
 
-    public void Colpisci(Vector3 direction,float force) {
-        body.velocity = direction * force*multiplier;
+    public void Colpisci(Vector3 direction, float force)
+    {
+        firstHit = null;
+        rb.velocity = direction * force * multiplier;
     }
 
-    public override void inBuca() {
+    public override void inBuca()
+    {
         Debug.Log("RIPRISTINO POSIZIONE ORIGINALE");
-        body.position = startPos;
-        body.angularVelocity=Vector3.zero;
-        body.velocity = Vector3.zero;
+        rb.position = startPos;
+        rb.angularVelocity = Vector3.zero;
+        rb.velocity = Vector3.zero;
     }
-    void Update() {
-        if(transform.position.y<0) inBuca();
+
+    void Update()
+    {
+        if (transform.position.y < 0) inBuca();
+    }
+
+    public StdBall getFirstHit()
+    {
+        return firstHit;
+    }
+
+    public void OnTriggerEnter(Collider collider) {
+        if (firstHit == null && collider.gameObject.tag=="Ball") {
+            firstHit=collider.gameObject.GetComponent<StdBall>();
+        }
     }
 }

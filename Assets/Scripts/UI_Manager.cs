@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -8,29 +9,24 @@ public class UI_Manager:MonoBehaviour{
     private static UI_Manager INSTANCE;
     [SerializeField] GameObject canvas;
     private GameManager manager;
-    private Text counter;
+    public Text p1_label;
+    public Text p2_label;
+    public Text cur_label;
 
-    public static UI_Manager Instance
-    {
-        get
-        {
-            if (INSTANCE == null) {
-                GameObject go = new GameObject();
-                INSTANCE = go.AddComponent<UI_Manager>();
-            }
-            return INSTANCE;
-        }
+    public static UI_Manager Get_instance() {
+        return INSTANCE;
     }
 
     void Start()
     {
         manager = GameManager.getManager();
-        counter = canvas.GetComponentInChildren<Text>();
+        INSTANCE = this;
     }
 
-    public void updateCounter(int n)
-    {
-        counter.text = "IN BUCA: " + n;
-        Debug.Log("BUCA "+n);
+    public void Update(){
+        p1_label.text = manager.p1.getLabel();
+        p2_label.text = manager.p2.getLabel();
+        cur_label.text = "(P"+manager.currentPlayer.n.ToString()+")";
+
     }
 }

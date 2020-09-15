@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager{
-    private Player p1;
-    private Player currentPlayer;
-    private Player p2;
-    private static GameManager _instance;
+    public Player p1;
+    public Player currentPlayer;
+    public Player p2;
+    private static GameManager _instance=null;
     public List<StdBall> balls;
+    private WhiteBall battente = SteccaManager.getInstance().battente.gameObject.GetComponent<WhiteBall>();
     public bool inBuca=false;
-    public bool tiroCompleto=false;
+    public bool tiroCompleto;
 
     public static GameManager getManager() {
         if (_instance == null) {
@@ -21,30 +20,48 @@ public class GameManager{
     
     private GameManager() {
         balls=new List<StdBall>();
-        p1=new Player(1);
-        p2=new Player(2);
+        p1=new Player(1,true);
+        p2=new Player(2,false);
         //set player p1 first
         currentPlayer = p1;
     }
 
     public bool checkBallsMoving() {
+        if (battente.isMoving()) {
+            return true;
+        }
         foreach (StdBall b in balls) {
-            if (b.isMoving()) return true;
+            if (b.isMoving()) {
+                return true;
+            }
         }
         return false;
     }
 
-  
+    public bool checkFirstHit() {
+        if (currentPlayer.balls.Contains(battente.getFirstHit().ballNumber)) {
+            return true;
+        }
+
+        return false;
+    }
 
     public bool pallaInBuca(StdBall ball) {
+        Debug.Log("player "+currentPlayer.n+" ha inbucato la palla n:"+ball.ballNumber);
+        balls.Remove(ball);
         if (currentPlayer.balls.Contains(ball.ballNumber)) {
             currentPlayer.remove(ball.ballNumber);
             inBuca = true;
-            Debug.Log("player "+currentPlayer.n+" ha vinto!!");
             return true;
         }
-            Debug.Log("player "+currentPlayer.n+" ha inbucato una palla dell'avversario");
+        else if(p1!=currentPlayer) {
+            p1.remove(ball.ballNumber);
             return false;
+        }
+        else{
+            p2.remove(ball.ballNumber);
+            return false;
+        }
     }
 
     public void continuaTurno() {

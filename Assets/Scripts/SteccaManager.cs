@@ -7,7 +7,6 @@ public class SteccaManager : MonoBehaviour
     public Vector3 offset;
     public Transform battente;
     private static SteccaManager INSTANCE=null;
-    private float directionX = 0;
     private float load = 1f;
     private Vector3 start;
     private WhiteBall ball;
@@ -15,6 +14,7 @@ public class SteccaManager : MonoBehaviour
     protected Vector3 direction;
     private LineRenderer line;
     private CameraController camera;
+    public bool onGoing;
     
     public static SteccaManager getInstance() {
         if(INSTANCE==null){
@@ -40,6 +40,8 @@ public class SteccaManager : MonoBehaviour
     }
 
     public void DoAnimation() {
+        onGoing = true;
+        GameManager.getManager().tiroCompleto = false;
         if (transform.position != start) {
             transform.position=Vector3.Lerp(transform.position,start,10 *Time.deltaTime);
         }
@@ -73,6 +75,7 @@ public class SteccaManager : MonoBehaviour
     }
 
     public void Reset() {
+        GameManager.getManager().tiroCompleto = false;
         start = battente.position;
         transform.position = start+offset;
         transform.localRotation=Quaternion.Euler(-Vector3.forward);
@@ -81,8 +84,7 @@ public class SteccaManager : MonoBehaviour
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
+        if (Input.GetKeyDown(KeyCode.R)) {
             foreach (StdBall b in GameManager.getManager().balls) {
                 b.resetBall();
             }
@@ -90,6 +92,11 @@ public class SteccaManager : MonoBehaviour
         }
         if (tira) {
             DoAnimation();
+        }
+
+        if (!GameManager.getManager().checkBallsMoving() && onGoing) {
+            onGoing = false;
+            GameManager.getManager().tiroCompleto = true;
         }
     }
 }
