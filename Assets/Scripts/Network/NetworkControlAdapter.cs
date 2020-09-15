@@ -8,8 +8,8 @@ namespace Network
     public class NetworkControlAdapter :MonoBehaviour
     {
         public Dictionary<String, String> data;
-        public float sensitivityHor = 9.0f;
-        private bool isMaster = false;
+        private bool isMaster = true;
+        private bool tira;
         private static NetworkControlAdapter INSTANCE=null;
 
         
@@ -24,6 +24,32 @@ namespace Network
 
         private NetworkControlAdapter() {
             data=new Dictionary<string, string>();
+        }
+
+        public void test() {
+            if (SteccaManager.getInstance().enabled)
+            {
+                if (data["drag"] != "0")
+                {
+                    SteccaManager.getInstance().Drag(float.Parse(data["drag"]));
+                }
+
+                if (data["reset"] == "1")
+                {
+                    SteccaManager.getInstance().Reset();
+                }
+
+                if (data["rotation"] != "0")
+                {
+                    float delta = float.Parse(data["rotation"]);
+                    SteccaManager.getInstance().Rotate(delta);
+
+                }
+                if (data["tira"] =="1") {
+                    SteccaManager.getInstance().Tira();
+                    tira = false;
+                }
+            }
         }
         
         public void Update()
@@ -43,14 +69,12 @@ namespace Network
 
                     if (data["rotation"] != "0")
                     {
-                        float delta = float.Parse(data["rotation"]) * sensitivityHor;
+                        float delta = float.Parse(data["rotation"]);
                         SteccaManager.getInstance().Rotate(delta);
 
                     }
                     if (data["tira"] =="1") {
                         SteccaManager.getInstance().Tira();
-                        lastValue=mainSlider.value;
-                        mainSlider.value = 0;
                         tira = false;
                     }
                 }

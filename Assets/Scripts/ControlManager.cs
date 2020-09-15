@@ -13,6 +13,8 @@ public class ControlManager : MonoBehaviour,IEndDragHandler {
     private bool tira = false;
     public float sensitivityHor = 9.0f;
     private static ControlManager INSTANCE;
+    private NetworkControlAdapter net = NetworkControlAdapter.getInstance();
+
     
     public static ControlManager getInstance()
     {
@@ -28,7 +30,7 @@ public class ControlManager : MonoBehaviour,IEndDragHandler {
     
     public void OnEndDrag(PointerEventData data) {
         Debug.Log("drag end, value:"+mainSlider.value.ToString());
-        TypeInferenceRuleAttribute=true
+        tira = true;
     }
 
     public void Update()
@@ -36,45 +38,46 @@ public class ControlManager : MonoBehaviour,IEndDragHandler {
         if (SteccaManager.getInstance().enabled) {
             if (mainSlider.value != 0)
             {
-                SteccaManager.getInstance().Drag(mainSlider.value);
-                NetworkControlAdapter.getInstance().data["drag"] = mainSlider.value.ToString();
+                //SteccaManager.getInstance().Drag(mainSlider.value);
+                net.data["drag"] = mainSlider.value.ToString();
             }else
             {
-                NetworkControlAdapter.getInstance().data["drag"] = "0";
+                net.data["drag"] = "0";
             }
 
             if (Input.GetMouseButtonDown(1))
             {
-                SteccaManager.getInstance().Reset();
-                NetworkControlAdapter.getInstance().data["reset"] = "1";
+                //SteccaManager.getInstance().Reset();
+                net.data["reset"] = "1";
             }else
             {
-                NetworkControlAdapter.getInstance().data["reset"] = "0";
+                net.data["reset"] = "0";
             }
 
             if (Input.GetMouseButton(1))
             {
                 float delta = Input.GetAxis("Mouse X") * sensitivityHor;
-                SteccaManager.getInstance().Rotate(delta);
-                NetworkControlAdapter.getInstance().data["rotation"] = delta.ToString();
+                //SteccaManager.getInstance().Rotate(delta);
+                net.data["rotation"] = delta.ToString();
             } else
             {
-                NetworkControlAdapter.getInstance().data["rotation"] = "0";
+                net.data["rotation"] = "0";
             }
 
 
             if (tira) {
-                SteccaManager.getInstance().Tira();
+                //SteccaManager.getInstance().Tira();
                 lastValue=mainSlider.value;
                 mainSlider.value = 0;
                 tira = false;
-                NetworkControlAdapter.getInstance().data["tira"] = "1";
+                net.data["tira"] = "1";
             }
             else
             {
-                NetworkControlAdapter.getInstance().data["tira"] = "0";
+                net.data["tira"] = "0";
 
             }
+            net.test();
         }
     }
 
