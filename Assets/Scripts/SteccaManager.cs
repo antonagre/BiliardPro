@@ -55,8 +55,7 @@ public class SteccaManager : MonoBehaviour
         tira = true;
     }
 
-    void DrawLine()
-    {
+    void DrawLine() {
         RaycastHit hit=new RaycastHit();
         Ray ray = new Ray(battente.position,direction);
         if (Physics.Raycast(ray,out hit))
@@ -66,11 +65,17 @@ public class SteccaManager : MonoBehaviour
         }
     }
 
-    public void Rotate(float delta)
-    {
+    public void Rotate(float delta) {
         transform.RotateAround(battente.position, Vector3.up, delta);
         direction = -(transform.position - battente.position).normalized;
         camera.updateCamera(direction);
+        DrawLine();
+    }
+    
+    public void Rotate(Vector3 direction) {
+        float delta = Vector3.Angle(direction, Vector3.forward);
+        transform.RotateAround(battente.position, Vector3.up, delta);
+        camera.updateCamera();
         DrawLine();
     }
 
@@ -79,7 +84,7 @@ public class SteccaManager : MonoBehaviour
         start = battente.position;
         transform.position = start+offset;
         transform.localRotation=Quaternion.Euler(-Vector3.forward);
-        camera.updateCamera(-Vector3.forward);
+        camera.updateCamera(-Vector3.right);
         DrawLine();
     }
 
